@@ -74,11 +74,8 @@ class Local
 
     }
 
-    //function test() { }
-
     function get_locale($args)
     {
-        //print("locale = ".$args['locale']);
 
         if (false === ($l = get_transient('local')) || 1 == 1)
         {
@@ -176,7 +173,10 @@ class Local
 
 			if(false != get_transient($_GET['lang']))
 			{
-				setcookie('lang', $_GET['lang']);
+				setcookie('lang', $_GET['lang'], time()+(60*60*24*30), '/');
+
+				//echo "set cookie main";
+
 				$this->lang = $_GET['lang'];
 				$this->load_local($this->lang);
 				return;
@@ -186,11 +186,17 @@ class Local
 
 		if (!isset($_COOKIE['lang']))
 		{
+
 			$this->lang = $this->select_local();
-			setcookie('lang', $this->lang);
+			setcookie('lang', $this->lang, time()+(60*60*24*30), '/');
+
+			//echo "set cookie automatic";
 		}
 		else
+		{
 			$this->lang = $_COOKIE['lang'];
+			//echo "get cookie <br /> $this->lang";
+		}
 	}
 
 
@@ -221,7 +227,7 @@ class Local
 				delete_transient($r->local);
 				set_transient($r->local, $this->load_local($r->local), 0);
 
-				echo "Updated locale: " . $r->local. "<br />";
+				echo "<br />Updated locale: " . $r->local;
 			}
 
 	    }
